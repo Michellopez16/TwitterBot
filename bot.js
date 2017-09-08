@@ -10,26 +10,29 @@ var config = require('./config');
 var T = new Twit(config);
 
 
+// Setting up a user stream
+var stream = T.stream('user');
+
+// Anytime someone follows me
+stream.on('follow',followed);
+
+function followed(event){
+	//console.log(event);
+	console.log("Eventos de follow!!!");
+	var name = event.source.name;
+	var screenName = event.source.screen_name;
+	tweetIt('@' + screenName + ' te gusta programar?');  
+}
+
+
+//setInterval(tweetIt,1000*20); // 1000 = one second 
 
 
 
-// 
-//  tweet 'hello world!' 
-// 
-// T.post('statuses/update', { status: 'Hola Mundo!' }, function(err, data, response) {
-//   console.log(data)
-// })
-
-setInterval(tweetIt,1000*20); // 1000 = one second 
-
-
-
-function tweetIt(){ 
-
-	var r = Math.floor(Math.random()*100);
+function tweetIt(txt){ 
 
 	var tweet = { 
-		status: 'Un numero aleatorio '+r+' #MiPrimerBot tweet programado' 
+		status: txt 
 	};
 
 	T.post('statuses/update', tweet, tweeted);
