@@ -10,6 +10,9 @@ var config = require('./config');
 var T = new Twit(config);
 
 
+
+
+
 // 
 //  tweet 'hello world!' 
 // 
@@ -17,21 +20,29 @@ var T = new Twit(config);
 //   console.log(data)
 // })
 
-var tweet = { 
-	status: '#MiPrimerBot tweet programado' 
-};
-
-T.post('statuses/update', tweet, tweeted);
+setInterval(tweetIt,1000*20); // 1000 = one second 
 
 
-function tweeted (err, data, response) {
-  if (err){
-  	console.log("Algo salio mal!!!");
-  } else{
-  console.log("Esto trabaja.")
+
+function tweetIt(){ 
+
+	var r = Math.floor(Math.random()*100);
+
+	var tweet = { 
+		status: 'Un numero aleatorio '+r+' #MiPrimerBot tweet programado' 
+	};
+
+	T.post('statuses/update', tweet, tweeted);
+
+
+	function tweeted (err, data, response) {
+	  if (err){
+	  	console.log("Algo salio mal!!!");
+	  } else{
+	  console.log("Esto trabaja.")
+	}
+	}
 }
-}
-
 
 // var params = { 
 // 	q: 'AntesNoEraBullying', 
