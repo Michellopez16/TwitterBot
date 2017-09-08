@@ -9,31 +9,47 @@ var config = require('./config');
 
 var T = new Twit(config);
 
+var exec = require('child_process').exec;
+var  fs = require('fs');
 
 
 
 
-// 
-//  tweet 'hello world!' 
-// 
-// T.post('statuses/update', { status: 'Hola Mundo!' }, function(err, data, response) {
-//   console.log(data)
-// })
-
-setInterval(tweetIt,1000*20); // 1000 = one second 
+tweetIt();
+//setInterval(tweetIt,1000*20); // 1000 = one second 
 
 
 
 function tweetIt(){ 
+	var cmd = 'processing-java --sketch=`pwd`/TwitterImg --run'
+	exec(cmd,processing);
 
-	var r = Math.floor(Math.random()*100);
+	function processing(){
+		var filename = "TwitterImg/output.png";
+		var params = {
+			encoding: 'base64'
+	    }
 
-	var tweet = { 
-		status: 'Un numero aleatorio '+r+' #MiPrimerBot tweet programado' 
-	};
+	var b64 = fs.readFileSync(filename,params);
+		
+	
+	T.post('media/upload',{media_data: b64},uploaded);
+	
+	console.log('Post media Terminado!!!');
 
-	T.post('statuses/update', tweet, tweeted);
+	function uploaded(err, data, response){
+		// This is where I will tweet!
+		console.log('data'+data);
+		var id = data.media_id_string;
+		console.log('ID'+id);
+		var tweet = { 
+		status: '#MiCodigo programando con node',
+		media_ids: [id] 
+		}
+		T.post('statuses/update', tweet, tweeted);
+	}
 
+	
 
 	function tweeted (err, data, response) {
 	  if (err){
@@ -42,7 +58,8 @@ function tweetIt(){
 	  console.log("Esto trabaja.")
 	}
 	}
-}
+}}
+
 
 // var params = { 
 // 	q: 'AntesNoEraBullying', 
